@@ -1,190 +1,50 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>&#21338;&#23458;</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
-            background: #f5f5f5;
-            color: #333;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid #0078d7;
-            padding-bottom: 12px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .header h1 {
-            font-size: 28px;
-            color: #222;
-        }
-        .btn-add {
-            padding: 10px 24px;
-            font-size: 16px;
-            background: #0078d7;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-family: "Microsoft YaHei", sans-serif;
-            transition: background 0.2s;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn-add:hover {
-            background: #005a9e;
-        }
-        .post {
-            border-bottom: 1px solid #eee;
-            padding: 20px 0;
-        }
-        .post:last-child {
-            border-bottom: none;
-        }
-        .post-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #0078d7;
-            margin-bottom: 6px;
-        }
-        .post-date {
-            font-size: 13px;
-            color: #999;
-            margin-bottom: 10px;
-        }
-        .post-content {
-            font-size: 16px;
-            line-height: 1.8;
-            color: #444;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        .footer {
-            text-align: center;
-            padding-top: 25px;
-            font-size: 14px;
-            color: #999;
-        }
-        .empty {
-            text-align: center;
-            color: #999;
-            padding: 40px 0;
-            font-size: 16px;
-        }
-        .loading {
-            text-align: center;
-            color: #666;
-            padding: 40px 0;
-        }
-        .post-number {
-            font-size: 12px;
-            color: #bbb;
-            margin-right: 8px;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <title>&#26434;&#35760;</title>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>&#128240; &#21338;&#23458;</h1>
-        <a href="https://github.com/MCXiaoyang/MCXiaoyang.github.io/issues/new?title=&#26032;&#21338;&#23458;&#26631;&#39064;&body=&#35831;&#20889;&#19979;&#21338;&#23458;&#20869;&#23481;&#8230;" target="_blank" class="btn-add">
-            &#10133; &#28155;&#21152;&#21338;&#23458;
-        </a>
-    </div>
+<h1>&#26434;&#35760;</h1>
+<p><a href="https://github.com/MCXiaoyang/MCXiaoyang.github.io/issues/new" target="_blank">&#20889;&#19968;&#31687;</a></p>
 
-    <div id="postList">
-        <div class="loading">&#27491;&#22312;&#21152;&#36733;&#21338;&#23458;&#8230;</div>
-    </div>
-
-    <div class="footer">
-        &copy; 2026 MCXiaoyang &middot; &#21338;&#23458;&#30001; GitHub Issues &#39537;&#21160;
-    </div>
-</div>
+<div id="list">&#21152;&#36733;&#20013;...</div>
 
 <script>
-    // GitHub &#20179;&#24211;&#20449;&#24687;
-    const REPO = 'MCXiaoyang/MCXiaoyang.github.io';
-    const LABEL = 'blog'; // &#21487;&#36873;&#65292;&#21482;&#26174;&#31034;&#25171;&#20102; blog &#26631;&#31614;&#30340; Issue
+const REPO = 'MCXiaoyang/MCXiaoyang.github.io';
 
-    async function loadPosts() {
-        const container = document.getElementById('postList');
+async function load() {
+    const el = document.getElementById('list');
+    try {
+        const res = await fetch(`https://api.github.com/repos/${REPO}/issues?state=open&sort=created&direction=desc`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
 
-        try {
-            // &#35843;&#29992; GitHub API &#33719;&#21462; Issues
-            let url = `https://api.github.com/repos/${REPO}/issues?state=open&sort=created&direction=desc`;
-            // &#22914;&#26524;&#24819;&#35201;&#26631;&#31614;&#36807;&#28388;&#65292;&#21487;&#20197;&#21152;&#19978; &labels=${LABEL}
-
-            const response = await fetch(url);
-            const issues = await response.json();
-
-            if (!response.ok) {
-                container.innerHTML = `<div class="empty">&#21152;&#36733;&#22833;&#36133;&#65306; ${issues.message || '&#26410;&#30693;&#38169;&#35823;'}</div>`;
-                return;
-            }
-
-            // &#36807;&#28388;&#25481; pull requests
-            const posts = issues.filter(issue => !issue.pull_request);
-
-            if (posts.length === 0) {
-                container.innerHTML = `
-                    <div class="empty">
-                        &#26242;&#26080;&#21338;&#23458;&#65292;&#28857;&#20987; &#8220;&#28155;&#21152;&#21338;&#23458;&#8221; &#21019;&#24314;&#31532;&#19968;&#31687;&#65281;
-                    </div>
-                `;
-                return;
-            }
-
-            let html = '';
-            posts.forEach((issue, index) => {
-                const date = new Date(issue.created_at);
-                const dateStr = date.toLocaleDateString('zh-CN');
-                const title = issue.title || '&#26080;&#26631;&#39064;';
-                const body = issue.body || '&#20869;&#23481;&#20026;&#31354;';
-                const number = issue.number;
-
-                html += `
-                    <div class="post">
-                        <div class="post-title">
-                            <span class="post-number">#${number}</span>
-                            ${escapeHtml(title)}
-                        </div>
-                        <div class="post-date">${dateStr}</div>
-                        <div class="post-content">${escapeHtml(body)}</div>
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
-
-        } catch (error) {
-            container.innerHTML = `<div class="empty">&#21152;&#36733;&#22833;&#36133;&#65306; ${error.message}</div>`;
+        const posts = data.filter(i => !i.pull_request);
+        if (!posts.length) {
+            el.innerHTML = '&#26242;&#26080;';
+            return;
         }
-    }
 
-    // &#31616;&#21333;&#30340;&#38450; XSS &#22788;&#29702;
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+        let html = '';
+        posts.forEach(p => {
+            const d = new Date(p.created_at);
+            const ds = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+            html += `
+                <hr>
+                <p><b>${p.title}</b><br>
+                ${ds}<br>
+                ${(p.body || '').replace(/\n/g, '<br>')}</p>
+            `;
+        });
+        el.innerHTML = html;
+    } catch (e) {
+        el.innerHTML = '&#35835;&#21462;&#22833;&#36133;';
     }
+}
 
-    // &#21152;&#36733;
-    loadPosts();
+load();
 </script>
 
 </body>
