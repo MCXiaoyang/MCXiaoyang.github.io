@@ -1,17 +1,226 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>&#25105;&#30340;&#20010;&#20154;&#32593;&#31449;</title>
+    <style>
+        /* &#20840;&#23631;&#32972;&#26223; */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #2b2b2b;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+        }
+
+        /* Windows 10 &#31383;&#21475; */
+        .window {
+            width: 900px;
+            height: 600px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: default;
+            user-select: none;
+            min-width: 500px;
+            min-height: 300px;
+            resize: both;
+        }
+
+        /* &#26631;&#39064;&#26639; - &#21487;&#25302;&#21160; */
+        .title-bar {
+            background: #f0f0f0;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: grab;
+            flex-shrink: 0;
+            border-bottom: 1px solid #d0d0d0;
+        }
+        .title-bar:active {
+            cursor: grabbing;
+        }
+
+        .title-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .title-text .icon {
+            font-size: 16px;
+        }
+
+        /* &#31383;&#21475;&#25511;&#21046;&#25353;&#38062; */
+        .window-controls {
+            display: flex;
+            gap: 6px;
+        }
+        .window-controls button {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            color: #333;
+            transition: background 0.2s;
+        }
+        .window-controls button:hover {
+            background: #d0d0d0;
+        }
+        .window-controls .close-btn:hover {
+            background: #e81123;
+            color: #fff;
+        }
+        .window-controls .max-btn:hover {
+            background: #d0d0d0;
+        }
+        .window-controls .min-btn:hover {
+            background: #d0d0d0;
+        }
+
+        /* iframe &#20869;&#23481; */
+        .window-content {
+            flex: 1;
+            background: #fff;
+            overflow: hidden;
+        }
+        .window-content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>&#27426;&#36814;&#26469;&#21040;&#25105;&#30340;&#32593;&#31449;&#65281;</h1>
-    <p>&#36825;&#26159;&#25105;&#30340;&#31532;&#19968;&#20010; GitHub Pages &#39029;&#38754; &#127881;</p>
 
-    <!-- &#36339;&#36716;&#25353;&#38062; -->
-    <a href="https://topserver.gt.tc" target="_blank">
-        <button style="padding: 15px 40px; font-size: 20px; background-color: #4CAF50; color: white; border: none; border-radius: 10px; cursor: pointer; margin-top: 20px;">
-            &#28857;&#20987;&#36339;&#36716;
-        </button>
-    </a>
+    <!-- Windows 10 &#31383;&#21475; -->
+    <div class="window" id="window">
+        <!-- &#26631;&#39064;&#26639; -->
+        <div class="title-bar" id="titleBar">
+            <div class="title-text">
+                <span class="icon">&#127760;</span>
+                <span>topserver.gt.tc</span>
+            </div>
+            <div class="window-controls">
+                <button class="min-btn" title="&#26368;&#23567;&#21270;">&#9472;</button>
+                <button class="max-btn" title="&#26368;&#22823;&#21270;">&#9633;</button>
+                <button class="close-btn" title="&#20851;&#38381;">&#10005;</button>
+            </div>
+        </div>
+
+        <!-- iframe &#20869;&#23481; -->
+        <div class="window-content">
+            <iframe src="https://topserver.gt.tc"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // ========== &#25302;&#21160;&#31383;&#21475; ==========
+        const windowEl = document.getElementById('window');
+        const titleBar = document.getElementById('titleBar');
+
+        let isDragging = false;
+        let offsetX = 0, offsetY = 0;
+
+        titleBar.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            const rect = windowEl.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+            windowEl.style.cursor = 'grabbing';
+            document.body.style.userSelect = 'none';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const x = e.clientX - offsetX;
+            const y = e.clientY - offsetY;
+            windowEl.style.left = x + 'px';
+            windowEl.style.top = y + 'px';
+            windowEl.style.transform = 'none';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            windowEl.style.cursor = 'default';
+            document.body.style.userSelect = '';
+        });
+
+        // ========== &#31383;&#21475;&#25511;&#21046; ==========
+        const closeBtn = document.querySelector('.close-btn');
+        const maxBtn = document.querySelector('.max-btn');
+        const minBtn = document.querySelector('.min-btn');
+
+        let isMaximized = false;
+        let prevRect = {};
+
+        closeBtn.addEventListener('click', () => {
+            if (confirm('&#30830;&#23450;&#35201;&#20851;&#38381;&#31383;&#21475;&#21527;&#65311;')) {
+                windowEl.style.display = 'none';
+            }
+        });
+
+        maxBtn.addEventListener('click', () => {
+            if (!isMaximized) {
+                prevRect = {
+                    left: windowEl.style.left,
+                    top: windowEl.style.top,
+                    width: windowEl.style.width,
+                    height: windowEl.style.height,
+                    transform: windowEl.style.transform
+                };
+                windowEl.style.left = '0';
+                windowEl.style.top = '0';
+                windowEl.style.width = '100vw';
+                windowEl.style.height = '100vh';
+                windowEl.style.transform = 'none';
+                windowEl.style.borderRadius = '0';
+                isMaximized = true;
+            } else {
+                windowEl.style.left = prevRect.left || '50%';
+                windowEl.style.top = prevRect.top || '50%';
+                windowEl.style.width = prevRect.width || '900px';
+                windowEl.style.height = prevRect.height || '600px';
+                windowEl.style.transform = prevRect.transform || 'translate(-50%, -50%)';
+                windowEl.style.borderRadius = '8px';
+                isMaximized = false;
+            }
+        });
+
+        minBtn.addEventListener('click', () => {
+            windowEl.style.display = 'none';
+            setTimeout(() => {
+                windowEl.style.display = 'flex';
+            }, 200);
+        });
+
+        // ========== &#38450;&#27490;&#31383;&#21475;&#36339;&#20986;&#35270;&#30028; ==========
+        windowEl.addEventListener('mousedown', () => {
+            windowEl.style.zIndex = '999';
+        });
+    </script>
+
 </body>
 </html>
