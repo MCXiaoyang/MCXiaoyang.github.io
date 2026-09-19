@@ -17,6 +17,9 @@
   --chip-fg: #1d4ed8;
   --chip-border: rgba(147, 197, 253, 0.5);
   --avatar-border: rgba(255, 255, 255, 0.85);
+  --btn-bg: linear-gradient(135deg, #2563eb, #6366f1);
+  --btn-fg: #ffffff;
+  --btn-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
 }
 
 [data-theme="dark"] {
@@ -36,6 +39,9 @@
   --chip-fg: #93c5fd;
   --chip-border: rgba(59, 130, 246, 0.35);
   --avatar-border: rgba(148, 163, 184, 0.25);
+  --btn-bg: linear-gradient(135deg, #2563eb, #6366f1);
+  --btn-fg: #ffffff;
+  --btn-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
 }
 
 html, body { min-height: 100vh; }
@@ -52,13 +58,13 @@ body {
   transition: background .4s, color .3s;
 }
 
-/* ---------- layout ---------- */
+/* ---------- layout: 两栏 ---------- */
 .layout {
-  max-width: 1080px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 56px 24px 80px;
+  padding: 48px 24px 80px;
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 300px 1fr;
   gap: 32px;
   align-items: start;
 }
@@ -72,19 +78,19 @@ body {
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--border);
   border-radius: 20px;
-  padding: 28px 24px;
+  padding: 32px 24px;
   box-shadow: var(--shadow);
   text-align: center;
   animation: fadeUp .5s ease-out;
 }
 
 .avatar {
-  width: 96px;
-  height: 96px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   border: 3px solid var(--avatar-border);
   box-shadow: 0 8px 24px rgba(30, 64, 175, 0.22);
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   transition: transform .3s, box-shadow .3s;
 }
 
@@ -108,43 +114,45 @@ body {
 .sidebar .sub {
   color: var(--text-dim);
   font-size: 13.5px;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
   line-height: 1.55;
 }
 
 .actions {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
+/* 按钮：渐变背景，白字，圆角 */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  color: var(--link);
+  gap: 8px;
+  color: var(--btn-fg);
   text-decoration: none;
   font-weight: 600;
-  font-size: 13px;
-  padding: 9px 14px;
-  border: 1px solid var(--chip-border);
-  background: var(--glass);
+  font-size: 14px;
+  padding: 11px 16px;
+  border: none;
+  background: var(--btn-bg);
   border-radius: 12px;
   cursor: pointer;
   font-family: inherit;
-  transition: all .2s;
+  transition: all .2s cubic-bezier(.4, 0, .2, 1);
+  box-shadow: var(--btn-shadow);
   width: 100%;
 }
 
 .btn:hover {
-  background: var(--glass-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(37, 99, 235, 0.5);
+  filter: brightness(1.05);
 }
 
-.theme-btn {
-  position: relative;
+.btn:active {
+  transform: translateY(0);
 }
 
 .theme-btn .icon-sun { display: none; }
@@ -262,20 +270,20 @@ a.chip:hover {
   border-top: 1px solid var(--border);
 }
 
-/* ---------- responsive ---------- */
-@media (max-width: 860px) {
+/* ---------- responsive: 窄屏变单栏 ---------- */
+@media (max-width: 760px) {
   .layout {
     grid-template-columns: 1fr;
-    gap: 24px;
-    padding: 32px 16px 60px;
+    gap: 20px;
+    padding: 28px 16px 60px;
   }
   .sidebar {
     position: static;
     padding: 24px 20px;
   }
   .avatar {
-    width: 72px;
-    height: 72px;
+    width: 76px;
+    height: 76px;
   }
   .sidebar h1 { font-size: 22px; }
   .actions {
@@ -286,6 +294,8 @@ a.chip:hover {
   .btn {
     width: auto;
     flex: 1;
-    min-width: 100px;
+    min-width: 90px;
+    padding: 10px 14px;
+    font-size: 13px;
   }
 }

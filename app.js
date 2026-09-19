@@ -17,7 +17,6 @@ const LANG_COLORS = {
   'Shell': '#89e051'
 };
 
-/* ---------- theme ---------- */
 function toggleTheme() {
   const cur = document.documentElement.getAttribute('data-theme');
   const next = cur === 'dark' ? 'light' : 'dark';
@@ -33,7 +32,6 @@ function toggleTheme() {
   } catch(e) {}
 })();
 
-/* ---------- utils ---------- */
 function esc(s) {
   return String(s || '').replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -51,7 +49,6 @@ function timeAgo(iso) {
   return Math.floor(s/31536000) + 'y ago';
 }
 
-/* ---------- render ---------- */
 function renderRepo(r) {
   const langColor = LANG_COLORS[r.language] || '#888';
   const lang = r.language
@@ -76,7 +73,6 @@ function renderRepo(r) {
   `;
 }
 
-/* ---------- load ---------- */
 async function load() {
   const box = document.getElementById('projects');
   try {
