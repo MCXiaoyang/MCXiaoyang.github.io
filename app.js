@@ -17,6 +17,7 @@ const LANG_COLORS = {
   'Shell': '#89e051'
 };
 
+/* ---------- theme ---------- */
 function toggleTheme() {
   const cur = document.documentElement.getAttribute('data-theme');
   const next = cur === 'dark' ? 'light' : 'dark';
@@ -32,6 +33,7 @@ function toggleTheme() {
   } catch(e) {}
 })();
 
+/* ---------- utils ---------- */
 function esc(s) {
   return String(s || '').replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -49,16 +51,17 @@ function timeAgo(iso) {
   return Math.floor(s/31536000) + 'y ago';
 }
 
+/* ---------- render ---------- */
 function renderRepo(r) {
-  const color = LANG_COLORS[r.language] || '#888';
+  const langColor = LANG_COLORS[r.language] || '#888';
   const lang = r.language
-    ? `<span class="chip lang"><span class="dot" style="background:${color}"></span>${esc(r.language)}</span>`
+    ? `<span class="chip"><span class="dot" style="background:${langColor}"></span>${esc(r.language)}</span>`
     : '';
   const stars = r.stargazers_count > 0
     ? `<span class="chip">★ ${r.stargazers_count}</span>` : '';
   const forks = r.forks_count > 0
     ? `<span class="chip">⑂ ${r.forks_count}</span>` : '';
-  const updated = `<span class="chip">Updated ${timeAgo(r.updated_at)}</span>`;
+  const updated = `<span class="chip">${timeAgo(r.updated_at)}</span>`;
   const homepage = r.homepage
     ? `<a class="chip" href="${esc(r.homepage)}" target="_blank" rel="noopener">↗ Demo</a>` : '';
 
@@ -73,6 +76,7 @@ function renderRepo(r) {
   `;
 }
 
+/* ---------- load ---------- */
 async function load() {
   const box = document.getElementById('projects');
   try {
@@ -81,7 +85,12 @@ async function load() {
     const repos = await res.json();
 
     const list = repos
-      .filter(r => !r.fork && !r.archived && r.name !== `${USER}.github.io` && r.name !== USER)
+      .filter(r =>
+        !r.fork &&
+        !r.archived &&
+        r.name !== `${USER}.github.io` &&
+        r.name !== USER
+      )
       .sort((a, b) => {
         if (b.stargazers_count !== a.stargazers_count)
           return b.stargazers_count - a.stargazers_count;
@@ -94,6 +103,7 @@ async function load() {
     }
 
     box.innerHTML = list.map(renderRepo).join('');
+
     document.getElementById('lastUpdated').textContent =
       'Updated ' + new Date().toLocaleTimeString();
   } catch (e) {
@@ -102,11 +112,7 @@ async function load() {
 }
 
 load();
-
-// 每 5 分钟刷新一次
 setInterval(load, 5 * 60 * 1000);
-
-// 页面重新可见时刷新
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) load();
 });
