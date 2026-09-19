@@ -1,0 +1,212 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-1: #e0e7ff;
+  --bg-2: #dbeafe;
+  --bg-3: #f0f9ff;
+  --text: #0f172a;
+  --text-dim: #475569;
+  --text-muted: #94a3b8;
+  --link: #1d4ed8;
+  --glass: rgba(255, 255, 255, 0.55);
+  --glass-hover: rgba(255, 255, 255, 0.78);
+  --border: rgba(255, 255, 255, 0.7);
+  --shadow: 0 8px 32px rgba(30, 64, 175, 0.12);
+  --chip-bg: rgba(219, 234, 254, 0.8);
+  --chip-fg: #1d4ed8;
+  --chip-border: rgba(147, 197, 253, 0.5);
+}
+
+[data-theme="dark"] {
+  --bg-1: #0b1220;
+  --bg-2: #0f172a;
+  --bg-3: #020617;
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --text-muted: #64748b;
+  --link: #93c5fd;
+  --glass: rgba(30, 41, 59, 0.55);
+  --glass-hover: rgba(30, 41, 59, 0.78);
+  --border: rgba(148, 163, 184, 0.15);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --chip-bg: rgba(37, 99, 235, 0.18);
+  --chip-fg: #93c5fd;
+  --chip-border: rgba(59, 130, 246, 0.35);
+}
+
+html, body { min-height: 100vh; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+  color: var(--text);
+  line-height: 1.6;
+  background:
+    radial-gradient(ellipse at top left, var(--bg-1) 0%, transparent 55%),
+    radial-gradient(ellipse at bottom right, var(--bg-2) 0%, transparent 55%),
+    linear-gradient(135deg, var(--bg-1) 0%, var(--bg-3) 100%);
+  background-attachment: fixed;
+  transition: background .4s, color .3s;
+}
+
+.wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 20px 80px;
+}
+
+header { text-align: center; margin-bottom: 48px; }
+
+header h1 {
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, #1d4ed8, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+
+header .sub {
+  color: var(--text-dim);
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+header .links a {
+  color: var(--link);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 8px 20px;
+  border: 1px solid var(--chip-border);
+  background: var(--glass);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  transition: all .2s;
+}
+
+header .links a:hover {
+  background: var(--glass-hover);
+  transform: translateY(-2px);
+}
+
+/* cards */
+.card {
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 22px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  transition: all .25s;
+  animation: fadeUp .4s ease-out backwards;
+}
+
+.card:hover {
+  background: var(--glass-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(37, 99, 235, 0.15);
+}
+
+.card h3 {
+  font-size: 19px;
+  margin-bottom: 6px;
+}
+
+.card h3 a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+.card h3 a:hover { text-decoration: underline; }
+
+.card .desc {
+  color: var(--text-dim);
+  font-size: 14.5px;
+  margin-bottom: 12px;
+}
+
+.card .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--chip-bg);
+  color: var(--chip-fg);
+  border: 1px solid var(--chip-border);
+}
+
+.chip.lang::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.chip .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+
+.loading, .error {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 40px;
+  font-size: 14px;
+}
+
+.error { color: #ef4444; }
+
+footer {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-top: 60px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+  cursor: pointer;
+  font-size: 18px;
+  z-index: 100;
+  transition: all .2s;
+}
+
+.theme-toggle:hover { transform: scale(1.1); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .wrap { padding: 40px 14px 60px; }
+  header h1 { font-size: 32px; }
+  .card { padding: 16px 18px; }
+}

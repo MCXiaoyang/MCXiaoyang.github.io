@@ -1,132 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <title>&#26434;&#35760;</title>
-    <style>
-        body {
-            font-family: "Microsoft YaHei", sans-serif;
-            max-width: 680px;
-            margin: 40px auto;
-            padding: 0 20px;
-            background: #fafafa;
-            color: #222;
-            line-height: 1.6;
-        }
-        h1 {
-            font-weight: 400;
-            font-size: 24px;
-            border-left: 4px solid #0078d7;
-            padding-left: 14px;
-        }
-        .top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        .top a {
-            color: #0078d7;
-            text-decoration: none;
-            border: 1px solid #0078d7;
-            padding: 4px 16px;
-            border-radius: 16px;
-            font-size: 14px;
-        }
-        .top a:hover {
-            background: #0078d7;
-            color: #fff;
-        }
-        hr {
-            border: none;
-            border-top: 1px solid #eee;
-            margin: 20px 0;
-        }
-        .post .title {
-            font-weight: 600;
-            font-size: 18px;
-            color: #111;
-        }
-        .post .date {
-            font-size: 13px;
-            color: #999;
-            margin: 2px 0 6px 0;
-        }
-        .post .body {
-            font-size: 15px;
-            color: #333;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        .loading, .empty {
-            color: #999;
-            text-align: center;
-            padding: 30px 0;
-        }
-        .footer {
-            text-align: center;
-            color: #ccc;
-            font-size: 13px;
-            margin-top: 40px;
-            border-top: 1px solid #f0f0f0;
-            padding-top: 20px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MCXiaoyang · Projects</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="theme">🌓</button>
 
-<div class="top">
-    <h1>&#26434;&#35760;</h1>
-    <a href="https://github.com/MCXiaoyang/MCXiaoyang.github.io/issues/new" target="_blank">&#20889;&#19968;&#31687;</a>
-</div>
+  <main class="wrap">
+    <header>
+      <h1>MCXiaoyang</h1>
+      <p class="sub">Building simulators and small systems in C++ and Python.</p>
+      <div class="links">
+        <a href="https://github.com/MCXiaoyang" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </header>
 
-<div id="list">&#21152;&#36733;&#20013;...</div>
+    <section id="projects">
+      <div class="loading">Loading projects…</div>
+    </section>
 
-<div class="footer">GitHub Issues &#39537;&#21160;</div>
+    <footer>
+      <span id="lastUpdated"></span>
+      <span>·</span>
+      <span>Auto-updated from GitHub API</span>
+    </footer>
+  </main>
 
-<script>
-const REPO = 'MCXiaoyang/MCXiaoyang.github.io';
-
-async function load() {
-    const el = document.getElementById('list');
-    try {
-        const res = await fetch(`https://api.github.com/repos/${REPO}/issues?state=open&sort=created&direction=desc`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
-
-        const posts = data.filter(i => !i.pull_request);
-        if (!posts.length) {
-            el.innerHTML = '<div class="empty">&#26242;&#26080;&#26434;&#35760;</div>';
-            return;
-        }
-
-        let html = '';
-        posts.forEach(p => {
-            const d = new Date(p.created_at);
-            const ds = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-            html += `
-                <div class="post">
-                    <div class="title">${esc(p.title)}</div>
-                    <div class="date">${ds}</div>
-                    <div class="body">${esc(p.body || '').replace(/\n/g, '<br>')}</div>
-                </div>
-                <hr>
-            `;
-        });
-        el.innerHTML = html;
-    } catch (e) {
-        el.innerHTML = '<div class="empty">&#35835;&#21462;&#22833;&#36133;</div>';
-    }
-}
-
-function esc(t) {
-    const d = document.createElement('div');
-    d.textContent = t;
-    return d.innerHTML;
-}
-
-load();
-</script>
-
+  <script src="app.js"></script>
 </body>
 </html>
